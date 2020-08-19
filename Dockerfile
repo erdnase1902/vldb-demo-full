@@ -37,7 +37,7 @@ RUN apt-get update \
   && apt-get clean
 
 RUN python3.5 -m pip install numpy pandas scipy scikit-learn tensorflow==1.15 networkx==1.10 beautifulsoup4 lxml matplotlib seaborn colour pytz requests flask
-RUN pip3 install numpy pandas scipy scikit-learn tensorflow==1.15 networkx==1.10 beautifulsoup4 lxml matplotlib seaborn colour pytz requests flask
+RUN pip3 install requests flask
 RUN ( \
     echo 'LogLevel DEBUG2'; \
     echo 'PermitRootLogin yes'; \
