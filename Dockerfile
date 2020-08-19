@@ -2,7 +2,7 @@
 #
 # Build and run:
 #   docker build -t vldb -f Dockerfile .
-#   docker run -d --cap-add sys_ptrace -p 2222:22 -p 8080:8080 -v "$(pwd):/project" --name vldb vldb
+#   docker run -d --cap-add sys_ptrace -p 2222:22 -p 8080:8080 -p 5000:5000 -v "$(pwd):/project" --name vldb vldb
 #   docker start vldb
 #   docker exec -it vldb bash
 #   ssh-keygen -f "$HOME/.ssh/known_hosts" -R "[localhost]:2222"
