@@ -51,6 +51,8 @@ RUN ( \
 RUN useradd -m user \
   && yes password | passwd user
 
+COPY docker_files/flags.py /usr/local/lib/python3.6/dist-packages/tensorflow_core/python/platform/
+
 CMD ["/usr/sbin/sshd", "-D", "-e", "-f", "/etc/ssh/sshd_config_vldb"]
 
 WORKDIR /project
