@@ -10,3 +10,10 @@ To fix "AttributeError: module 'sys' has no attribute 'argv'", copy the followin
 	import sys
 	if not hasattr(sys, 'argv'):
     	sys.argv  = ['']
+
+那直接把training dataset里的图转化成查询，就可以保证一定非空
+training dataset里的文件格式是：
+图ID
+节点数n 边数m
+接下来n行表示节点标签
+最后m行表示边
