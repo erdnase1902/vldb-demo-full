@@ -31,6 +31,8 @@ RUN apt-get update \
       python3-dev \
       python3-pip \
       software-properties-common \
+      nodejs \
+      npm \
   && add-apt-repository -y ppa:deadsnakes/ppa \
   && apt-get update \
   && apt-get -y install python3.5 python3.5-dev \
