@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 
 app = Flask(__name__)
 
@@ -14,9 +14,14 @@ def about():
     return render_template('about.html')
 
 
-@app.route('/demo')
+@app.route('/demo', methods=['GET', 'POST'])
 def demo():
-    return render_template('demo.html')
+    if request.method=='GET':
+        return render_template('demo.html')
+    elif request.method=='POST':
+        return render_template('demo.html')
+    else:
+        return 'illegal request encountered'
 
 
 if __name__ == '__main__':
