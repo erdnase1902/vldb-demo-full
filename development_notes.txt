@@ -18,6 +18,9 @@ training dataset里的文件格式是：
 接下来n行表示节点标签
 最后m行表示边
 
+clone https://github.com/erdnase1902/Graph-Hashing
+checkout server branch
+
 clone sigma.js github into flask_server/static:
 	git clone git@github.com:jacomyal/sigma.js.git
 To build the code:
