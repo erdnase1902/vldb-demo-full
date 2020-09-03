@@ -28,3 +28,6 @@ To build the code:
     Install npm
     Use "npm install" to install sigma development dependencies.
     Use "npm run build" to minify the code with Uglify. The minified file sigma.min.js will then be accessible in the build/ folder.
+
+jquery PyCharm:
+	https://intellij-support.jetbrains.com/hc/en-us/community/posts/360002260719--jQuery-shortcut-underlined-as-unresolved-function-or-method-
