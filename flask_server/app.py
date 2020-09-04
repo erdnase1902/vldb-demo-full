@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect, url_for
 
 app = Flask(__name__)
 
@@ -14,14 +14,16 @@ def about():
     return render_template('about.html')
 
 
-@app.route('/demo', methods=['GET', 'POST'])
+@app.route('/demo')
 def demo():
-    if request.method=='GET':
-        return render_template('demo.html')
-    elif request.method=='POST':
-        return render_template('demo.html')
-    else:
-        return 'illegal request encountered'
+    show_result = False
+    return render_template('demo.html', show_result=show_result)
+
+
+@app.route('/query', methods=['POST'])
+def query():
+    show_result = True
+    return render_template('demo.html', show_result=show_result)
 
 
 if __name__ == '__main__':

@@ -31,3 +31,7 @@ To build the code:
 
 jquery PyCharm:
 	https://intellij-support.jetbrains.com/hc/en-us/community/posts/360002260719--jQuery-shortcut-underlined-as-unresolved-function-or-method-
+
+https://stackoverflow.com/questions/26954122/how-can-i-pass-arguments-into-redirecturl-for-of-flask
+https://stackoverflow.com/questions/8925716/disabled-form-fields-not-submitting-data
+https://stackoverflow.com/questions/60183002/how-to-do-pagination-for-bootstrap-grid

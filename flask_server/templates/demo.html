@@ -6,94 +6,119 @@
     <p>aLorem ipsum dolor sit amet, consectetur adipisicing elit. Dolorum eos eveniet ullam. Adipisci at autem
         blanditiis
         commodi cum fugit, incidunt iure laboriosam nihil officiis provident similique sit ullam, veniam voluptates!</p>
-
-    <div class="row">
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-header">
-                    Your query graph (json format):
-                </div>
-                <div class="card-body">
-                    <form>
-            <textarea id="query_input" rows="20" class="form-control" disabled style="min-width: 100%">
+    {% if not show_result %}
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        Your query graph (json format):
+                    </div>
+                    <div class="card-body">
+                        <form id="query_form" action="{{ url_for('query') }}" method="post">
+            <textarea id="query_input" rows="20" class="form-control" style="min-width: 100%" name="query">
             </textarea>
-                    </form>
+                        </form>
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-md-6">
+
+                <div class="card">
+                    <div class="card-header">
+                        graph:
+                    </div>
+                    <div class="card-body">
+                        <div style="height: 300px" id="query-container"></div>
+                    </div>
                 </div>
             </div>
-
         </div>
-        <div class="col-md-6">
-
-            <div class="card">
-                <div class="card-header">
-                    graph:
-                </div>
-                <div class="card-body">
-                    <div style="height: 300px" id="query-container"></div>
-                </div>
-            </div>
+        <br>
+        <div class="clearfix">
+            <button class="btn btn-primary float-md-right" id="query_button">Execute query</button>
         </div>
-    </div>
-    <br>
-    <div class="clearfix"><a href="#" class="btn btn-primary float-md-right">Execute query</a></div>
 
 
-    <script>
-        const query_string = '{\n' +
-            '  "nodes": [\n' +
-            '    {\n' +
-            '      "id": "n0",\n' +
-            '      "label": "A node",\n' +
-            '      "x": 0,\n' +
-            '      "y": 0,\n' +
-            '      "size": 3\n' +
-            '    },\n' +
-            '    {\n' +
-            '      "id": "n1",\n' +
-            '      "label": "Another node",\n' +
-            '      "x": 3,\n' +
-            '      "y": 1,\n' +
-            '      "size": 2\n' +
-            '    },\n' +
-            '    {\n' +
-            '      "id": "n2",\n' +
-            '      "label": "And a last one",\n' +
-            '      "x": 1,\n' +
-            '      "y": 3,\n' +
-            '      "size": 1\n' +
-            '    }\n' +
-            '  ],\n' +
-            '  "edges": [\n' +
-            '    {\n' +
-            '      "id": "e0",\n' +
-            '      "source": "n0",\n' +
-            '      "target": "n1"\n' +
-            '    },\n' +
-            '    {\n' +
-            '      "id": "e1",\n' +
-            '      "source": "n1",\n' +
-            '      "target": "n2"\n' +
-            '    },\n' +
-            '    {\n' +
-            '      "id": "e2",\n' +
-            '      "source": "n2",\n' +
-            '      "target": "n0"\n' +
-            '    }\n' +
-            '  ]\n' +
-            '}';
-        $(document).ready(function () {
-            $('#query_input').val(query_string);
-            s = new sigma({
-        graph: JSON.parse(query_string),
-        container: 'query-container',
-        settings: {
-            defaultNodeColor: '#2a0c8d',
-            drawLabels: true,
-            labelThreshold: 0
-        }
-});
-        });
-    </script>
+        <script>
+            const query_string = '{\n' +
+                '  "nodes": [\n' +
+                '    {\n' +
+                '      "id": "n0",\n' +
+                '      "label": "A node",\n' +
+                '      "x": 0,\n' +
+                '      "y": 0,\n' +
+                '      "size": 3\n' +
+                '    },\n' +
+                '    {\n' +
+                '      "id": "n1",\n' +
+                '      "label": "Another node",\n' +
+                '      "x": 3,\n' +
+                '      "y": 1,\n' +
+                '      "size": 2\n' +
+                '    },\n' +
+                '    {\n' +
+                '      "id": "n2",\n' +
+                '      "label": "And a last one",\n' +
+                '      "x": 1,\n' +
+                '      "y": 3,\n' +
+                '      "size": 1\n' +
+                '    }\n' +
+                '  ],\n' +
+                '  "edges": [\n' +
+                '    {\n' +
+                '      "id": "e0",\n' +
+                '      "source": "n0",\n' +
+                '      "target": "n1"\n' +
+                '    },\n' +
+                '    {\n' +
+                '      "id": "e1",\n' +
+                '      "source": "n1",\n' +
+                '      "target": "n2"\n' +
+                '    },\n' +
+                '    {\n' +
+                '      "id": "e2",\n' +
+                '      "source": "n2",\n' +
+                '      "target": "n0"\n' +
+                '    }\n' +
+                '  ]\n' +
+                '}';
+            $(document).ready(function () {
+                $('#query_input').val(query_string);
+                var s = new sigma({
+                    graph: JSON.parse(query_string),
+                    container: 'query-container',
+                    settings: {
+                        defaultNodeColor: '#2a0c8d',
+                        drawLabels: true,
+                        labelThreshold: 0
+                    }
+                });
+                $('#query_button').on('click', function () {
+                    $('#query_form').submit();
+                });
+
+            });
+        </script>
+    {% else %}
+        {#        https://stackoverflow.com/questions/60183002/how-to-do-pagination-for-bootstrap-grid #}
+        <h3>Query results:</h3>
+        <br>
+        Showing 10 out of 73:
+        <br>
+        <nav aria-label="Page navigation example">
+            <ul class="pagination">
+                <li class="page-item"><a class="page-link" href="#">Previous</a></li>
+                <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                <li class="page-item"><a class="page-link" href="#">Next</a></li>
+            </ul>
+        </nav>
+        <div class="clearfix"><a href="{{ url_for('demo') }}" class="btn btn-primary float-md-right" id="new_query">Make
+            Another Query</a></div>
+    {% endif %}
+
     <script src="{{ url_for('static', filename='sigma.js/build/sigma.min.js') }}"></script>
     <script src="{{ url_for('static', filename='sigma.js/build/plugins/sigma.parsers.json.min.js') }}"></script>
 {% endblock %}
