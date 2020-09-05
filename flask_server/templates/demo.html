@@ -107,34 +107,25 @@
             }
         </style>
         {#        https://stackoverflow.com/questions/60183002/how-to-do-pagination-for-bootstrap-grid #}
-        <div class="clearfix"><h3 class="float-md-left">Query results:</h3><a href="{{ url_for('demo') }}" class="btn btn-primary float-md-right" id="new_query">Make
+        <div class="clearfix"><h3 class="float-md-left">Query results</h3><a href="{{ url_for('demo') }}"
+                                                                              class="btn btn-primary float-md-right"
+                                                                              id="new_query">Make
             Another Query</a></div>
         <br>
-        Showing 10 out of 73:
+        Returned {{ num_results }} graphs:
         <br><br>
-        <div class="row">
-            <div class="col-md-4">
-                <div class="result" id="result0"></div>
-            </div>
-            <div class="col-md-4">
-                <div class="result" id="result1"></div>
-            </div>
-            <div class="col-md-4">
-                <div class="result" id="result2"></div>
-            </div>
+        {% for result_type in results_type_list %}
+            {% if result_type['start_div'] %}
+                <div class="row">
+            {% endif %}
+        <div class="col-md-4">
+            <div class="result" id="result{{ result_type['idx'] }}"></div>
         </div>
-        <br>
-        <div class="row">
-            <div class="col-md-4">
-                <div class="result" id="result3"></div>
+        {% if result_type['end_div'] %}
             </div>
-            <div class="col-md-4">
-                <div class="result" id="result4"></div>
-            </div>
-            <div class="col-md-4">
-                <div class="result" id="result5"></div>
-            </div>
-        </div>
+            <br>
+        {% endif %}
+        {% endfor %}
 
         <br>
         <nav aria-label="Page navigation example">
@@ -192,51 +183,20 @@
             $(document).ready(function () {
                 $('#query_input').val(query_string);
                 const parsed_json = JSON.parse(query_string);
-                var s0 = new sigma({
-                    graph: parsed_json,
-                    container: 'result0',
-                    settings: {
-                        defaultNodeColor: '#2a0c8d',
-                        drawLabels: true,
-                        labelThreshold: 0
-                    }
-                });
-                var s1 = new sigma({
-                    graph: parsed_json,
-                    container: 'result1',
-                    settings: {
-                        defaultNodeColor: '#2a0c8d',
-                        drawLabels: true,
-                        labelThreshold: 0
-                    }
-                });
-                var s2 = new sigma({
-                    graph: parsed_json,
-                    container: 'result2',
-                    settings: {
-                        defaultNodeColor: '#2a0c8d',
-                        drawLabels: true,
-                        labelThreshold: 0
-                    }
-                });
-                var s3 = new sigma({
-                    graph: parsed_json,
-                    container: 'result3',
-                    settings: {
-                        defaultNodeColor: '#2a0c8d',
-                        drawLabels: true,
-                        labelThreshold: 0
-                    }
-                });
-                var s4 = new sigma({
-                    graph: parsed_json,
-                    container: 'result4',
-                    settings: {
-                        defaultNodeColor: '#2a0c8d',
-                        drawLabels: true,
-                        labelThreshold: 0
-                    }
-                });
+
+                {% for result_type in results_type_list %}
+                    {% if not result_type['dummy_div'] %}
+                        var s{{ result_type['idx'] }} = new sigma({
+                            graph: parsed_json,
+                            container: 'result{{ result_type['idx'] }}',
+                            settings: {
+                                defaultNodeColor: '#2a0c8d',
+                                drawLabels: true,
+                                labelThreshold: 0
+                            }
+                        });
+                    {% endif %}
+                {% endfor %}
 
 
             });
