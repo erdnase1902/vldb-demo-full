@@ -23,7 +23,8 @@ def demo():
 @app.route('/query', methods=['POST'])
 def query():
     show_result = True
-    return render_template('demo.html', show_result=show_result)
+    num_results = 20
+    return render_template('demo.html', show_result=show_result, num_results=num_results)
 
 
 if __name__ == '__main__':
