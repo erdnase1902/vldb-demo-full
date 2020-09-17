@@ -4,7 +4,7 @@ Links for splitted train/test:
 	https://drive.google.com/file/d/130iGpQiAnJ0_m4IyHD6H7fM-RurVZy9s/view?usp=sharing
 
 example command to start server:
-	bin/main ../data/FULL_ALCHEMY/train/graphs.bss 119387 ../model/SavedModel/0618_NoAugFULL_ALCHEMY.ckpt ../model/SavedModel/0618_NoAugFULL_ALCHEMY.ckpt.index ../model/SavedModel/bit_weights_0618_NoAugFULL_ALCHEMY.txt
+	bin/main ../data/FULL_ALCHEMY/train/graphs.bss 119387 ../model/SavedModel/0618_NoAugFULL_ALCHEMY.ckpt ../model/SavedModel/inverted_index_0618_NoAugFULL_ALCHEMY.txt ../model/SavedModel/bit_weights_0618_NoAugFULL_ALCHEMY.txt
 
 To fix "AttributeError: module 'sys' has no attribute 'argv'", copy the following three lines to /usr/local/lib/python3.6/dist-packages/tensorflow_core/python/platform/flags.py
 	import sys
