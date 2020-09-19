@@ -6,12 +6,13 @@ graphs = None
 
 def initialize():
     try:
-        bss_file = open('./graphs.json', 'r')
+        bss_file = open('/project/flask_server/graphs.json', 'r')
     except FileNotFoundError:
         from utility.process_bss import process_bss
         print("Cached graphs not found. Processing graphs. This could take a while")
-        process_bss('/project/Graph-Hashing/data/FULL_ALCHEMY/train/graphs.bss', './graphs.json')
-        bss_file = open('./graphs.json', 'r')
+        # This line is slow in debug... Don't run this line in debug lol
+        process_bss('/project/Graph-Hashing/data/FULL_ALCHEMY/train/graphs.bss', '/project/flask_server/graphs.json')
+        bss_file = open('/project/flask_server/graphs.json', 'r')
     global graphs
     graphs = json.load(bss_file)
     bss_file.close()
