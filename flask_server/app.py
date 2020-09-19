@@ -1,5 +1,21 @@
 from flask import Flask, render_template, request, redirect, url_for
+import json
 
+graphs = None
+
+
+def initialize():
+    try:
+        bss_file = open('./graphs.json', 'r')
+    except FileNotFoundError:
+        from utility.process_bss import process_bss
+        print("Cached graphs not found. Processing graphs. This could take a while")
+        process_bss('/project/Graph-Hashing/data/FULL_ALCHEMY/train/graphs.bss', './graphs.json')
+        bss_file = open('./graphs.json', 'r')
+    global graphs
+    graphs = json.load(bss_file)
+    bss_file.close()
+initialize()
 app = Flask(__name__)
 
 
@@ -12,6 +28,7 @@ def index():
 @app.route('/about_us')
 def about_us():
     return render_template('about_us.html')
+
 
 @app.route('/about_demo')
 def about_demo():
