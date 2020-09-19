@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for
 import json
-
+import socket
 graphs = None
 
 
@@ -45,7 +45,10 @@ def demo():
 @app.route('/query', methods=['POST'])
 def query():
     show_result = True
-    num_results = 13
+    query_result = backend_query(request.form.get('query', ''))
+    query_result = query_result.decode("utf-8").split(';')
+    query_result = [q for q in query_result if q]
+    num_results = len(query_result)
     results_type_list = list()
     idx = 0
     while (idx < num_results) or (idx % 3 != 0):
@@ -60,6 +63,7 @@ def query():
             pass
         if idx < num_results:
             append_dict['dummy_div'] = False
+            append_dict['graph'] = json.dumps(graphs[query_result[idx]])
         else:
             append_dict['dummy_div'] = True
         results_type_list.append(append_dict)
@@ -69,6 +73,17 @@ def query():
     return render_template('demo.html', show_result=show_result, num_results=num_results,
                            results_type_list=results_type_list)
 
+
+def backend_query(string):
+    port_1 = 7000
+    string = string.replace(';', '\n')
+    s = socket.socket()
+    host = socket.gethostname()
+    s.connect((host, port_1))
+    s.send(string.encode(encoding="utf-8"))
+    s.send(bytes("done\n", 'utf-8'))
+    ret = s.recv(102400)
+    return ret
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)

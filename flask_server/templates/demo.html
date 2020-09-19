@@ -41,6 +41,7 @@
 
 
         <script>
+            const query_string_0 = '1 10 1222660; 10; 11; 0; 0; 0; 0; 1; 0; 0; 0; 1; 0; 0 6 1; 1 6 1; 1 3 1; 1 7 1; 2 8 1; 2 9 1; 3 4 1; 4 5 1; 5 6 1; 6 8 1; 7 9 1;'
             const query_string = '{\n' +
                 '  "nodes": [\n' +
                 '    {\n' +
@@ -84,7 +85,7 @@
                 '  ]\n' +
                 '}';
             $(document).ready(function () {
-                $('#query_input').val(query_string);
+                $('#query_input').val(query_string_0);
                 var s = new sigma({
                     graph: JSON.parse(query_string),
                     container: 'query-container',
@@ -138,56 +139,13 @@
             </ul>
         </nav>
         <script>
-            const query_string = '{\n' +
-                '  "nodes": [\n' +
-                '    {\n' +
-                '      "id": "n0",\n' +
-                '      "label": "A node",\n' +
-                '      "x": 0,\n' +
-                '      "y": 0,\n' +
-                '      "size": 3\n' +
-                '    },\n' +
-                '    {\n' +
-                '      "id": "n1",\n' +
-                '      "label": "Another node",\n' +
-                '      "x": 3,\n' +
-                '      "y": 1,\n' +
-                '      "size": 2\n' +
-                '    },\n' +
-                '    {\n' +
-                '      "id": "n2",\n' +
-                '      "label": "And a last one",\n' +
-                '      "x": 1,\n' +
-                '      "y": 3,\n' +
-                '      "size": 1\n' +
-                '    }\n' +
-                '  ],\n' +
-                '  "edges": [\n' +
-                '    {\n' +
-                '      "id": "e0",\n' +
-                '      "source": "n0",\n' +
-                '      "target": "n1"\n' +
-                '    },\n' +
-                '    {\n' +
-                '      "id": "e1",\n' +
-                '      "source": "n1",\n' +
-                '      "target": "n2"\n' +
-                '    },\n' +
-                '    {\n' +
-                '      "id": "e2",\n' +
-                '      "source": "n2",\n' +
-                '      "target": "n0"\n' +
-                '    }\n' +
-                '  ]\n' +
-                '}';
+
             $(document).ready(function () {
-                $('#query_input').val(query_string);
-                const parsed_json = JSON.parse(query_string);
 
                 {% for result_type in results_type_list %}
                     {% if not result_type['dummy_div'] %}
                         var s{{ result_type['idx'] }} = new sigma({
-                            graph: parsed_json,
+                            graph: {{ result_type['graph'] | safe }},
                             container: 'result{{ result_type['idx'] }}',
                             settings: {
                                 defaultNodeColor: '#2a0c8d',
