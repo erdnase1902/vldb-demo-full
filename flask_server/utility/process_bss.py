@@ -30,7 +30,7 @@ def process_bss(bss_path, output_path=None):
             elif state == STATE.NODES:
                 nodeid = 0
                 for line in bss_lines[line_idx: line_idx + num_nodes]:
-                    node = {'id': "n{}".format(nodeid), 'label': line, 'x': random(), 'y': random(), 'size': 2}
+                    node = {'id': "n{}".format(nodeid), 'label': line, 'x': 10*random(), 'y': 10*random(), 'size': 2}
                     graph['nodes'].append(node)
                     nodeid += 1
                 line_idx += num_nodes
