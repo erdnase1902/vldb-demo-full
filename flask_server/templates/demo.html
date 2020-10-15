@@ -11,7 +11,52 @@
             <div class="col-md-6">
                 <div class="card">
                     <div class="card-header">
-                        Your query:
+                        Your query
+                        <button type="button" class="btn btn-secondary btn-sm" data-toggle="modal"
+                                data-target="#formatModal">See query format
+                        </button>
+                        :
+                        <!-- The Modal -->
+                        <div class="modal" id="formatModal">
+                            <div class="modal-dialog modal-xl">
+                                <div class="modal-content">
+
+                                    <!-- Modal Header -->
+                                    <div class="modal-header">
+                                        <h4 class="modal-title">Query Format</h4>
+                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                    </div>
+
+                                    <!-- Modal body -->
+                                    <div class="modal-body">
+                                        First line: QT,MAN,ID (QT: Query Threshold, MAN: Maximum Returned Answer Number,
+                                        ID: query ID (not used, please put dummy value here))
+                                        <br>
+                                        Second line: n
+                                        <br>
+                                        Third line: m
+                                        <br>
+                                        (n: number of vertices, m, number of edges)
+                                        <br>
+                                        Next n lines, each line has one number, representing the vertex label.
+                                        <br>
+                                        Next m lines, each line has three numbers "a, b, 1", representing an edge
+                                        between vertex a and vertex b.
+                                        <br>
+                                        You can also replace "\n" with ";" at the end of each line.
+
+                                        <br>
+                                        For an example, please click the button "Preview query" to see how the example query looks like.
+                                    </div>
+
+                                    <!-- Modal footer -->
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <div class="card-body">
                         <form id="query_form" action="{{ url_for('query') }}" method="post">
@@ -44,13 +89,14 @@
 
         <script>
             const query_string_0 = '1 10 1222660; 10; 11; 0; 0; 0; 0; 1; 0; 0; 0; 1; 0; 0 6 1; 1 6 1; 1 3 1; 1 7 1; 2 8 1; 2 9 1; 3 4 1; 4 5 1; 5 6 1; 6 8 1; 7 9 1;'
+
             function attemptDraw(query) {
                 console.log(query);
                 query = query.replace(/;/g, '\n');
                 let lines = query.split('\n');
-                lines = lines.filter(line=>line);
-                lines = lines.map(line=>line.trim());
-                const STATE = Object.freeze({"QT_MAN_ID":1, "NUM_NODES": 2, "NUM_EDGES": 3, "NODES": 4, "EDGES": 5});
+                lines = lines.filter(line => line);
+                lines = lines.map(line => line.trim());
+                const STATE = Object.freeze({"QT_MAN_ID": 1, "NUM_NODES": 2, "NUM_EDGES": 3, "NODES": 4, "EDGES": 5});
                 let graph = {'nodes': [], 'edges': []};
                 let state = STATE.QT_MAN_ID;
                 let line_idx = 0;
@@ -65,7 +111,7 @@
                 Next m lines, each line has three numbers (a, b, 1), representing an edge between vertex a and vertex b.
                 You can also replace "\n" with ";" at the end of each line.
                 * */
-                while (line_idx<lines.length) {
+                while (line_idx < lines.length) {
                     switch (state) {
                         case STATE.QT_MAN_ID:
                             line_idx++;
@@ -83,26 +129,32 @@
                             break;
                         case STATE.NODES:
                             let nodeidx = 0;
-                            let node_lines = lines.slice(line_idx, line_idx+num_nodes);
+                            let node_lines = lines.slice(line_idx, line_idx + num_nodes);
                             for (const line of node_lines) {
-                                let node = {'id': 'n'+nodeidx.toString(), 'label': line, 'x': 10*Math.random(), 'y': 10*Math.random(), 'size': 2};
+                                let node = {
+                                    'id': 'n' + nodeidx.toString(),
+                                    'label': line,
+                                    'x': 10 * Math.random(),
+                                    'y': 10 * Math.random(),
+                                    'size': 2
+                                };
                                 graph.nodes.push(node);
                                 nodeidx++;
                             }
-                            line_idx+=num_nodes;
+                            line_idx += num_nodes;
                             state = STATE.EDGES;
                             break;
                         case STATE.EDGES:
                             let edgeidx = 0;
-                            let edge_lines = lines.slice(line_idx, line_idx+num_edges);
+                            let edge_lines = lines.slice(line_idx, line_idx + num_edges);
                             for (const line of edge_lines) {
-                                let edgesource = 'n'+line.split(" ")[0];
-                                let edgetarget = 'n'+line.split(" ")[1];
-                                let edge = {'id': "e"+edgeidx.toString(), 'source': edgesource, 'target': edgetarget};
+                                let edgesource = 'n' + line.split(" ")[0];
+                                let edgetarget = 'n' + line.split(" ")[1];
+                                let edge = {'id': "e" + edgeidx.toString(), 'source': edgesource, 'target': edgetarget};
                                 graph.edges.push(edge);
                                 edgeidx++;
                             }
-                            line_idx+=num_edges;
+                            line_idx += num_edges;
                             break;
                     }
                 }
@@ -120,24 +172,25 @@
                     }
                 });
                 attemptDraw.s.startForceAtlas2({worker: true, barnesHutOptimize: false});
-                setTimeout(function () {attemptDraw.s.stopForceAtlas2();}, 3000);
+                setTimeout(function () {
+                    attemptDraw.s.stopForceAtlas2();
+                }, 3000);
 
 
             }
+
             $(document).ready(function () {
                 $('#query_input').val(query_string_0);
-
 
 
                 $('#query_button').on('click', function () {
                     $('#query_form').submit();
                 });
-                $('#preview_query').on('click', function() {
+                $('#preview_query').on('click', function () {
                     let text = $('#query_input').val();
                     try {
                         attemptDraw(text);
-                    }
-                    catch (e) {
+                    } catch (e) {
                         console.log('error drawing');
                     }
                 });
@@ -152,8 +205,8 @@
         </style>
         {#        https://stackoverflow.com/questions/60183002/how-to-do-pagination-for-bootstrap-grid #}
         <div class="clearfix"><h3 class="float-md-left">Query results</h3><a href="{{ url_for('demo') }}"
-                                                                              class="btn btn-primary float-md-right"
-                                                                              id="new_query">Make
+                                                                             class="btn btn-primary float-md-right"
+                                                                             id="new_query">Make
             Another Query</a></div>
         <br>
         Returned {{ num_results }} graphs:
@@ -172,15 +225,15 @@
         {% endfor %}
 
         <br>
-{#        <nav aria-label="Page navigation example">#}
-{#            <ul class="pagination">#}
-{#                <li class="page-item"><a class="page-link" href="#">Previous</a></li>#}
-{#                <li class="page-item active"><a class="page-link" href="#">1</a></li>#}
-{#                <li class="page-item"><a class="page-link" href="#">2</a></li>#}
-{#                <li class="page-item"><a class="page-link" href="#">3</a></li>#}
-{#                <li class="page-item"><a class="page-link" href="#">Next</a></li>#}
-{#            </ul>#}
-{#        </nav>#}
+        {#        <nav aria-label="Page navigation example">#}
+        {#            <ul class="pagination">#}
+        {#                <li class="page-item"><a class="page-link" href="#">Previous</a></li>#}
+        {#                <li class="page-item active"><a class="page-link" href="#">1</a></li>#}
+        {#                <li class="page-item"><a class="page-link" href="#">2</a></li>#}
+        {#                <li class="page-item"><a class="page-link" href="#">3</a></li>#}
+        {#                <li class="page-item"><a class="page-link" href="#">Next</a></li>#}
+        {#            </ul>#}
+        {#        </nav>#}
         <script>
 
             $(document).ready(function () {
@@ -197,7 +250,9 @@
                             }
                         });
                         s{{ result_type['idx'] }}.startForceAtlas2({worker: true, barnesHutOptimize: false});
-                        setTimeout(function () {s{{ result_type['idx'] }}.stopForceAtlas2();}, 3000);
+                        setTimeout(function () {
+                            s{{ result_type['idx'] }}.stopForceAtlas2();
+                        }, 3000);
                     {% endif %}
                 {% endfor %}
 
