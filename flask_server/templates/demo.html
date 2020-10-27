@@ -65,7 +65,23 @@
             </textarea>
                         </form>
                         <br>
-                        <button class="btn btn-primary" id="preview_query">Preview query</button>
+                        <div class="form-row align-itmes-center mb-2">
+                            <div class="col-auto mr-4">
+                                <input type="text" class="form-control" id="node_label_input" placeholder="Node Label">
+                            </div>
+                            <div class="col-auto btn btn-primary" id="add_node_btn">Add node</div>
+                        </div>
+                        <br>
+                        <div class="form-row align-itmes-center mb-2">
+                            <div class="col-auto">
+                                <input type="text" class="form-control" id="src_node_input" placeholder="Source node ID">
+                            </div>
+                            <div class="col-auto">
+                                <input type="text" class="form-control" id="target_node_input" placeholder="Target node ID">
+                            </div>
+                            <div class="col-auto btn btn-primary" id="add_edge_btn">Add edge</div>
+                        </div>
+{#                        <button class="btn btn-primary" id="preview_query">Preview query</button>#}
                     </div>
                 </div>
 
@@ -99,10 +115,9 @@
                     this.nodeLabels = new Map();
                     if (queryStr === "") {
                         return;
-                    }
-                    else {
-                        queryStr = query.replace(/;/g, '\n');
-                        let lines = query.split('\n');
+                    } else {
+                        queryStr = queryStr.replace(/;/g, '\n');
+                        let lines = queryStr.split('\n');
                         // removes empty line
                         lines = lines.filter(line => line);
                         lines = lines.map(line => line.trim());
@@ -136,7 +151,7 @@
                                 case STATE.NUM_NODES:
                                     num_nodes = parseInt(lines[line_idx], 10);
                                     this.nodeCounter = num_nodes;
-                                    for (let nodeidx = 0; nodeidx<num_nodes; nodeidx++) {
+                                    for (let nodeidx = 0; nodeidx < num_nodes; nodeidx++) {
                                         this.adjList.set(nodeidx, new Set());
                                     }
                                     line_idx++;
@@ -151,7 +166,7 @@
                                     let nodeidx = 0;
                                     let node_lines = lines.slice(line_idx, line_idx + num_nodes);
                                     for (const line of node_lines) {
-                                        this.adjList.set(nodeidx, line)
+                                        this.nodeLabels.set(nodeidx, line)
                                         nodeidx++;
                                     }
                                     line_idx += num_nodes;
@@ -173,24 +188,78 @@
                         }
                     }
                 }
+
                 newNode(nodeLabel) {
                     this.nodeLabels.set(this.nodeCounter, nodeLabel);
-                    this.adjList.set(this.nodeCounter, new Map());
+                    this.adjList.set(this.nodeCounter, new Set());
                     this.nodeCounter += 1;
                 }
+
                 newEdge(source, dest) {
                     if ((!this.adjList.has(source)) || (!this.adjList.has(dest))) {
                         return false;
-                    }
-                    else {
+                    } else {
                         this.adjList.get(source).add(dest);
                         this.adjList.get(dest).add(source);
+                        return true;
                     }
+                }
+
+                /*
+                * @param {Graph} graph - input graph of Graph object
+                * @param {string} containerid - id of the container that sigma.js puts the graph into
+                * */
+                static drawGraph(graph, containerid) {
+                    let sigma_graph = {'nodes': [], 'edges': []};
+                    let edge_counter = 0;
+                    let added_edges = new Set(); // Used for making sure we don't have self loop in sigma graph
+                    graph.adjList.forEach((connected_nodes_ids, nodeid, map) => {
+                        let node = {
+                            'id': nodeid.toString(),
+                            'label': 'label: ' + graph.nodeLabels.get(nodeid) + ', id: ' + nodeid.toString(),
+                            'x': 10 * Math.random(),
+                            'y': 10 * Math.random(),
+                            'size': 2
+                        };
+                        sigma_graph.nodes.push(node);
+                        connected_nodes_ids.forEach((value1, value2, set) => {
+                            let edgesource = nodeid.toString();
+                            let edgetarget = value1.toString();
+                            let edgeString = edgesource + ',' + edgetarget;
+                            let edgeString_rev = edgetarget + ',' + edgesource;
+                            if (added_edges.has(edgeString) || added_edges.has(edgeString_rev)) {
+                                return;
+                            }
+                            added_edges.add(edgeString);
+                            let edge = {'id': edge_counter.toString(), 'source': edgesource, 'target': edgetarget};
+                            edge_counter += 1;
+                            sigma_graph.edges.push(edge);
+                            return;
+                        });
+                    });
+                    if (typeof this.s !== 'undefined') {
+                        this.s.kill();
+                    }
+                    this.s = new sigma({
+                        graph: sigma_graph,
+                        container: containerid,
+                        settings: {
+                            defaultNodeColor: '#2a0c8d',
+                            drawLabels: true,
+                            labelThreshold: 0
+                        }
+                    });
+                    this.s.startForceAtlas2({worker: true, barnesHutOptimize: false});
+                    setTimeout(()=> {
+                        this.s.stopForceAtlas2();
+                        return;
+                    }, 3000);
+
                 }
             }
 
-            const query_string_0 = '1 10 1222660; 10; 11; 0; 0; 0; 0; 1; 0; 0; 0; 1; 0; 0 6 1; 1 6 1; 1 3 1; 1 7 1; 2 8 1; 2 9 1; 3 4 1; 4 5 1; 5 6 1; 6 8 1; 7 9 1;'
-
+            let query_string_0 = '1 10 1222660; 10; 11; 0; 0; 0; 0; 1; 0; 0; 0; 1; 0; 0 6 1; 1 6 1; 1 3 1; 1 7 1; 2 8 1; 2 9 1; 3 4 1; 4 5 1; 5 6 1; 6 8 1; 7 9 1;'
+            let graph = new Graph(query_string_0);
             function attemptDraw(query) {
                 {#console.log(query);#}
                 query = query.replace(/;/g, '\n');
@@ -288,13 +357,36 @@
                 $('#query_button').on('click', function () {
                     $('#query_form').submit();
                 });
-                $('#preview_query').on('click', function () {
-                    let text = $('#query_input').val();
+
+                /* draw graphs now */
+                let text = $('#query_input').val();
                     try {
-                        attemptDraw(text);
+                        graph = new Graph(text);
+                        Graph.drawGraph(graph, 'query-container');
                     } catch (e) {
                         console.log('error drawing');
                     }
+                /*$('#preview_query').on('click', function () {
+                    let text = $('#query_input').val();
+                    try {
+                        graph = new Graph(text);
+                        Graph.drawGraph(graph, 'query-container');
+                    } catch (e) {
+                        console.log('error drawing');
+                    }
+                });*/
+                $('#add_node_btn').on('click', function () {
+                    let label = $('#node_label_input').val();
+                    graph.newNode(label);
+                    Graph.drawGraph(graph, 'query-container');
+                });
+                $('#add_edge_btn').on('click', function () {
+                    let src = $('#src_node_input').val();
+                    let target = $('#target_node_input').val();
+                    src = parseInt(src, 10);
+                    target = parseInt(target, 10);
+                    graph.newEdge(src, target);
+                    Graph.drawGraph(graph, 'query-container');
                 });
 
             });
