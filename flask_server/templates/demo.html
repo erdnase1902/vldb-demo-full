@@ -204,7 +204,54 @@
                         return true;
                     }
                 }
+                toQueryFormat() {
+                    // convert the graph into Zongyue format
+                        /*
+                    First line: QT,MAN,ID (QT: Query Threshold, MAN: Maximum Returned Answer Number, ID: query ID)
+                    Second line: n
+                    Third line: m
+                    (n: number of vertices, m, number of edges)
+                    Next n lines, each line has one number, representing the vertex label.
+                    Next m lines, each line has three numbers (a, b, 1), representing an edge between vertex a and vertex b.
+                    You can also replace "\n" with ";" at the end of each line.
+                    * */
+                    let qt = 1;
+                    let man = 10;
+                    let id = 1;
+                    let num_nodes = this.nodeCounter;
+                    let num_edges = 0;
+                    let ret_string_block1 = `${qt} ${man} ${id};`;
+                    let ret_string_block2 = ""; // for nodes
+                    let ret_string_block3 = ""; // for edges
 
+                    // handles edges
+                    let used_edges = new Set();
+                    this.adjList.forEach((value, key, map)=>{
+                        value.forEach((value1, value2, set)=> {
+                            if (used_edges.has(`${key} ${value1}`)||used_edges.has(`${value1} ${key}`)) {
+
+                            }
+                            else {
+                                used_edges.add(`${key} ${value1}`);
+                                used_edges.add(`${value1} ${key}`);
+                                ret_string_block3 += `${key} ${value1} 1;`;
+                                num_edges += 1;
+                            }
+                        });
+                    });
+
+                    // handles nodes
+                    this.nodeLabels.forEach((value, key, map)=> {
+                        ret_string_block2 += `${value};`;
+                    });
+
+                    // build the return string
+                    let ret_string = `${ret_string_block1} ${num_nodes}; ${num_edges}; ${ret_string_block2} ${ret_string_block3}`;
+                    return ret_string;
+
+
+
+                }
                 /*
                 * @param {Graph} graph - input graph of Graph object
                 * @param {string} containerid - id of the container that sigma.js puts the graph into
@@ -355,7 +402,9 @@
 
 
                 $('#query_button').on('click', function () {
-                    $('#query_form').submit();
+                    let new_query_str = graph.toQueryFormat();
+                    $('#query_input').val(new_query_str);
+                    $('#query_form').submit(); // submits the query in the textbox
                 });
 
                 /* draw graphs now */
