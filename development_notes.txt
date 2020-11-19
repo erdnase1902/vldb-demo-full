@@ -1,3 +1,23 @@
+Next Steps:
+	- GED, MCS detection
+	- MCS matching (top k), pruning technique
+	- hardcode metrics (e.g. MCS + GED + MCS matching)
+	- unsupervised graph embeddings (e.g. tsne) visualization
+	- change query format for user friendly (e.g. fill in the blank, remove first 3 lines which are unfriendly)
+	- consider perfect case - what to include
+	- neo4j - leverage existing work
+	- upload a graph: adj mat
+	- add node by clicking (draw)
+	- separate tau (metadata and graph) from query
+	- show 10 graphs, and then next 10
+	- isomorphic graph should look same? tsne?
+	- id visualization ged (3 column table) + pagination
+	- upload dataset/graph - retrain (challenging)? retrain after significantly change? periodically retrain in background
+	- offline version?
+	- display linux/alchemy/aids for selection...
+	- toy database
+	- progress bar for retrain...
+
 Links for splitted train/test:
 	https://drive.google.com/file/d/1xgWbDhynOV4fM7cerVn3GtaGTUkPntsI/view?usp=sharing
 	https://drive.google.com/file/d/1s0L8HZdZCmMrdxT5taPp3qOhGC4EH8ru/view?usp=sharing
