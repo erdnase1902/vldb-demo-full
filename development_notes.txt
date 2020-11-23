@@ -1,3 +1,9 @@
+How to substitute MCS for GED:
+	(1) Database.cpp: Database::QueryProcess
+	(2) DataFetcher.py: 
+		1. def generate_similar_graphs(self, g, k)
+		2. ret = subprocess.check_output -> change this for MCS
+
 Next Steps:
 	- GED, MCS detection
 	- MCS matching (top k), pruning technique
