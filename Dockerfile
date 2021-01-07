@@ -39,8 +39,8 @@ RUN apt-get update \
   && apt-get -y install python3.6 python3.6-dev \
   && apt-get clean
 
-RUN python3.5 -m pip install numpy pandas scipy scikit-learn tensorflow==1.15 networkx==1.10 beautifulsoup4 lxml matplotlib seaborn colour pytz requests flask
-RUN python3.6 -m pip install numpy pandas scipy scikit-learn tensorflow==1.15 networkx==1.10 beautifulsoup4 lxml matplotlib seaborn colour pytz requests flask
+RUN python3.5 -m pip install numpy pandas scipy scikit-learn tensorflow==1.15 networkx==2.2 beautifulsoup4 lxml matplotlib seaborn colour pytz requests flask klepto
+RUN python3.6 -m pip install numpy pandas scipy scikit-learn tensorflow==1.15 networkx==2.2 beautifulsoup4 lxml matplotlib seaborn colour pytz requests flask klepto
 RUN pip3 install requests flask
 RUN ( \
     echo 'LogLevel DEBUG2'; \
@@ -50,9 +50,14 @@ RUN ( \
   ) > /etc/ssh/sshd_config_vldb \
   && mkdir /run/sshd
 
+# For MCS
+RUN apt-get -y install libboost-all-dev && apt-get clean
+
+
 RUN useradd -m user \
   && yes password | passwd user
 
+# Fix Tensorflow error
 COPY docker_files/flags.py /usr/local/lib/python3.6/dist-packages/tensorflow_core/python/platform/
 
 CMD ["/usr/sbin/sshd", "-D", "-e", "-f", "/etc/ssh/sshd_config_vldb"]
