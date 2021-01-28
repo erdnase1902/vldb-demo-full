@@ -1,18 +1,21 @@
 from flask import Flask, render_template, request, redirect, url_for
 import json
+import os
 import socket
 graphs = None
 
 
 def initialize():
+    script_dir = os.path.dirname(os.path.realpath(__file__))
     try:
-        bss_file = open('/project/flask_server/graphs.json', 'r')
+        bss_file = open(os.path.join(script_dir, 'graphs.json'), 'r')
     except FileNotFoundError:
         from utility.process_bss import process_bss
         print("Cached graphs not found. Processing graphs. This could take a while")
         # This line is slow in debug... Don't run this line in debug lol
-        process_bss('/project/Graph-Hashing/data/FULL_ALCHEMY/train/graphs.bss', '/project/flask_server/graphs.json')
-        bss_file = open('/project/flask_server/graphs.json', 'r')
+
+        process_bss(os.path.join(os.path.dirname(script_dir), 'Graph-Hashing/data/FULL_ALCHEMY/train/graphs.bss'), os.path.join(script_dir, 'graphs.json'))
+        bss_file = open(os.path.join(script_dir, 'graphs.json'), 'r')
     global graphs
     graphs = json.load(bss_file)
     bss_file.close()
